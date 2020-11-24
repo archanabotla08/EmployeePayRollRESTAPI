@@ -154,6 +154,13 @@ public class EmployeePayRollService {
 		};
 		
 	}
+
+	public void addEmployeePayRollData(EmployeePayRollData employeePayRollData, IOService ioService) throws SQLException {
+		if(ioService.equals(IOService.DB_IO))
+			this.addEmployeePayRollData(employeePayRollData.name, employeePayRollData.gender,
+						employeePayRollData.salary, employeePayRollData.startDate);
+		else employeePayRollList.add(employeePayRollData);
+	}
 	
 
 }
