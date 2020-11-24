@@ -40,28 +40,51 @@ public class EmloyeePayRollRESTAPITEST {
 		request.body(empJson);
 		return request.post("/employee_payroll");
 	}
-	@Test
-	public void givenEmployeeDataInJSONServer_WhenRetrived_SouldMatchCount() {
-		EmployeePayRollData[] arrayOfEmps = getEmployeeList();
-		EmployeePayRollService employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
-		long enteries = employeePayRollService.countEnteries(IOService.REST_IO);
-		assertEquals(2,enteries);
-	}
+//	@Test
+//	public void givenEmployeeDataInJSONServer_WhenRetrived_SouldMatchCount() {
+//		EmployeePayRollData[] arrayOfEmps = getEmployeeList();
+//		EmployeePayRollService employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
+//		long enteries = employeePayRollService.countEnteries(IOService.REST_IO);
+//		assertEquals(2,enteries);
+//	}
+//	
+//	@Test
+//	public void givenEmployee_WhenAdded_ShouldMatch201ResponsesAndCount() throws SQLException {
+//		EmployeePayRollData[] arrayOfEmps = getEmployeeList();
+//		EmployeePayRollService employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
+//		EmployeePayRollData employeePayRollData = new EmployeePayRollData(0, "Mark Zuckerberg", 300000.0,LocalDate.now());
+//		Response response = addEmployeeToJsonServer(employeePayRollData);
+//		int statusCode = response.getStatusCode();
+//		assertEquals(201, statusCode);
+//		
+//		employeePayRollData = new Gson().fromJson(response.asString(), EmployeePayRollData.class);
+//		employeePayRollService.addEmployeePayRollData(employeePayRollData,IOService.REST_IO);
+//		long enteries = employeePayRollService.countEnteries(IOService.REST_IO);
+//		assertEquals(3,enteries);
+//	}
 	
 	@Test
-	public void givenEmployee_WhenAdded_ShouldMatch201ResponsesAndCount() throws SQLException {
+	public void givenListOfEmployee_WhenAdded_ShouldMatch201ResponseAndCount() throws SQLException {
+		EmployeePayRollService employeePayRollService;
 		EmployeePayRollData[] arrayOfEmps = getEmployeeList();
-		EmployeePayRollService employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
-		EmployeePayRollData employeePayRollData = new EmployeePayRollData(0, "Mark Zuckerberg", 300000.0,LocalDate.now());
-		Response response = addEmployeeToJsonServer(employeePayRollData);
-		int statusCode = response.getStatusCode();
-		assertEquals(201, statusCode);
+		employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
 		
-		employeePayRollData = new Gson().fromJson(response.asString(), EmployeePayRollData.class);
-		employeePayRollService.addEmployeePayRollData(employeePayRollData,IOService.REST_IO);
-		long enteries = employeePayRollService.countEnteries(IOService.REST_IO);
-		assertEquals(3,enteries);
+		EmployeePayRollData[] arrayOfEmpPayRolls = {
+				new EmployeePayRollData(0,"Sunder","M",60000.0,LocalDate.now()),
+				new EmployeePayRollData(0,"Mukesh","M",70000.0,LocalDate.now()),
+				new EmployeePayRollData(0,"Anil","M",90000.0,LocalDate.now())
+		};
+		for(EmployeePayRollData employeePayRollData : arrayOfEmpPayRolls) {
+			Response response = addEmployeeToJsonServer(employeePayRollData);
+			int statusCode = response.getStatusCode();
+			assertEquals(201, statusCode);
+			
+			employeePayRollData = new Gson().fromJson(response.asString(),EmployeePayRollData.class);
+			employeePayRollService.addEmployeePayRollData(employeePayRollData, IOService.REST_IO);
+		}
+		
+		long entries = employeePayRollService.countEnteries(IOService.REST_IO);
+		assertEquals(6, entries);
 	}
 	
-
 }
