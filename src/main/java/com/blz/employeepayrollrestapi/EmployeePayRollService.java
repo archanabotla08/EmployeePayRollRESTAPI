@@ -163,6 +163,14 @@ public class EmployeePayRollService {
 						employeePayRollData.salary, employeePayRollData.startDate);
 		else employeePayRollList.add(employeePayRollData);
 	}
+
+	public void deleteEmployeePayRoll(String name, IOService ioService) {
+		if(ioService.equals(IOService.REST_IO)) {
+			EmployeePayRollData employeePayRollData = this.getEmployeePayRollData(name);
+			employeePayRollList.remove(employeePayRollData);
+		}
+		
+	}
 	
 
 }

@@ -101,10 +101,25 @@ public class EmloyeePayRollRESTAPITEST {
 		request.body(empJson);
 		Response response = request.put("/employee_payroll/"+employeePayRollData.id);
 		int statusCode = response.getStatusCode();
+		assertEquals(200, statusCode);	
+	}
+	
+	@Test
+	public void givenEmployeeToDelete_WhenDeleted_ShouldMatch200ResponseAndCount() {
+		EmployeePayRollService employeePayRollService;
+		EmployeePayRollData[] arrayOfEmps = getEmployeeList();
+		employeePayRollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
+		
+		EmployeePayRollData employeePayRollData = employeePayRollService.getEmployeePayRollData("Anil");
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type","application/json");
+		Response response = request.delete("/employee_payroll/"+employeePayRollData.id);
+		int statusCode = response.getStatusCode();
 		assertEquals(200, statusCode);
-
 		
-		
+		employeePayRollService.deleteEmployeePayRoll(employeePayRollData.name,IOService.REST_IO);
+		long entries = employeePayRollService.countEnteries(IOService.REST_IO);
+		assertEquals(5, entries);
 	}
 	
 }
