@@ -36,9 +36,11 @@ public class EmployeePayRollService {
 		return employeePayRollDataList.get(0).equals(getEmployeePayRollData(name));
 		
 	}
-	public void updateEmployeeSalary(String name,double salary) throws EmployeePayRollException {
-		int result = employeePayRollDBService.updateEmployeeData(name,salary);
-		if(result == 0) return;
+	public void updateEmployeeSalary(String name,double salary, IOService ioService) throws EmployeePayRollException {
+		if(ioService.equals(IOService.DB_IO)) {
+			int result = employeePayRollDBService.updateEmployeeData(name,salary);
+			if(result == 0) return;
+		}	
 		EmployeePayRollData employeePayRollData = this.getEmployeePayRollData(name);
 		if(employeePayRollData != null) employeePayRollData.salary = salary;
 		
@@ -136,24 +138,24 @@ public class EmployeePayRollService {
 		
 	}
 
-	public void updateEmployeeSalaryWithThreads(String name,double salary) {
-		Map<Integer,Boolean> employeeAditionStatus = new HashMap<Integer,Boolean>();
-		Runnable task = () -> {
-			employeeAditionStatus.put(name.hashCode(), false);
-			 System.out.println("Updated Thread Name:" + Thread.currentThread().getName());
-			try {
-				this.updateEmployeeSalary(name, salary);
-			} catch (EmployeePayRollException e) {
-				
-				e.printStackTrace();
-			}
-			employeeAditionStatus.put(name.hashCode(), true);
-			System.out.println("Updated Thread Name: " + Thread.currentThread().getName());
-			Thread thread = new Thread();
-			thread.start();
-		};
-		
-	}
+//	public void updateEmployeeSalaryWithThreads(String name,double salary) {
+//		Map<Integer,Boolean> employeeAditionStatus = new HashMap<Integer,Boolean>();
+//		Runnable task = () -> {
+//			employeeAditionStatus.put(name.hashCode(), false);
+//			 System.out.println("Updated Thread Name:" + Thread.currentThread().getName());
+//			try {
+//				this.updateEmployeeSalary(name, salary);
+//			} catch (EmployeePayRollException e) {
+//				
+//				e.printStackTrace();
+//			}
+//			employeeAditionStatus.put(name.hashCode(), true);
+//			System.out.println("Updated Thread Name: " + Thread.currentThread().getName());
+//			Thread thread = new Thread();
+//			thread.start();
+//		};
+//		
+//	}
 
 	public void addEmployeePayRollData(EmployeePayRollData employeePayRollData, IOService ioService) throws SQLException {
 		if(ioService.equals(IOService.DB_IO))
